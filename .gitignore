@@ -125,3 +125,6 @@ dmypy.json
 
 
 test-package/
+files
+mods
+version.txt
