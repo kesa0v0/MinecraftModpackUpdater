@@ -14,7 +14,7 @@ def move_files(path, files):
     makedirs(path)
     for file in files:
         print(file)
-        shutil.move(curr_path + '/files/' + file, path+file)
+        shutil.move(curr_path + '/files/mods/' + file, path+file)
 
 def download_mods():
     print("downloading  mods...")
@@ -32,7 +32,7 @@ def read_version(minecraft_mod_path):
     print("reading version...")
     download_version_file()
     current_version = ""
-    with open(minecraft_mod_path + "/version.txt", "r") as f:
+    with open(minecraft_mod_path + "version.txt", "r") as f:
         current_version = f.read()
     with open(curr_path + "/files/version.txt", "r") as f:
         new_version = f.read()
@@ -62,16 +62,17 @@ def update(minecraft_mod_path):
     print("updating...")
     download_mods()
     unzip()
-    move_files(minecraft_mod_path, [file for file in os.listdir(curr_path+"/files")])
+    move_files(minecraft_mod_path, [file for file in os.listdir(curr_path+"/files/mods/")])
+    shutil.move(curr_path + '/files/version.txt', minecraft_mod_path+"/version.txt")
 
 
 def loader(minecraft_mod_path):
     print("start loading")
-    if os.path.isfile(minecraft_mod_path + '/version.txt'):
+    if os.path.isfile(minecraft_mod_path + 'version.txt'):
         if read_version(minecraft_mod_path):
             print("update start...")
             shutil.rmtree(minecraft_mod_path)
-            os.remove(minecraft_mod_path + "version.txt")
+            
             update(minecraft_mod_path)
         else:
             print("no need to update")
@@ -83,7 +84,6 @@ def loader(minecraft_mod_path):
 
 import tkinter
 from tkinter import filedialog
-import getpass
 
 
 curr_path = os.getcwd()
@@ -117,7 +117,7 @@ class GUI(tkinter.Tk):
     def do_download(self):
         self.loading.config(text="loading...")
         self.loading.update_idletasks()
-        minecraft_mod_path = self.minecraft_mod_path.get()
+        minecraft_mod_path = self.minecraft_mod_path.get() + 'mods/'
         makedirs(curr_path + '/files')
         print(minecraft_mod_path)
 
