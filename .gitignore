@@ -125,6 +125,5 @@ dmypy.json
 
 
 test-package/
-files
-mods
+test/
 version.txt
