@@ -37,16 +37,15 @@ def generate_modlist(path: str):
 
 
 app = Flask(__name__)
+modslist: str
 
 @app.route("/") 
 def index():
     return "Download Client"
 
-@app.route("/api/modlist") 
+@app.route("/api/modslist") 
 def modlist():
-
-
-    return ""
+    return modslist
 
 @app.route("/api/download/<path:modpath>")
 def download(modpath: str):
@@ -54,5 +53,8 @@ def download(modpath: str):
     return ""
 
 if __name__ == "__main__":
-    # app.run()
     generate_modlist(path_to_folder)
+    with open(path_to_modslist, "r") as f:
+        modslist = f.read()
+
+    app.run()
