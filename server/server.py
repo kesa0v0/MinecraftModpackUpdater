@@ -26,16 +26,16 @@ def travel_path(path: str) -> dict:
 def dict_to_string(data):
   return json.dumps(data, indent=4)
 
-def string_to_dict(data_string):
+def string_to_dict(data_string) -> dict:
   return json.loads(data_string)
 
-def generate_modlist(path: str):
+def generate_modlist():
     tree = travel_path(path_to_mods)
 
     with open(path_to_modslist, "w") as f:
         f.write(dict_to_string(tree))
 
-def generate_configlist(path: str):
+def generate_configlist():
     tree =travel_path(path_to_configs)
 
     with open(path_to_configslist, "w") as f:
@@ -66,8 +66,8 @@ def configlist():
 
 
 if __name__ == "__main__":
-    generate_modlist(path_to_folder)
-    generate_configlist(path_to_folder)
+    generate_modlist()
+    generate_configlist()
     with open(path_to_modslist, "r") as f:
         modslist = f.read()
     with open(path_to_configslist, "r") as f:
