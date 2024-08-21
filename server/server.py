@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 
 import os
 import json
@@ -55,14 +55,13 @@ def index():
 def modlist():
     return modslist
 
-@app.route("/api/download/<path:modpath>")
-def download(modpath: str):
-
-    return ""
-
 @app.route("/api/configslist")
 def configlist():
     return configlist
+
+@app.route("/api/download/<path:modpath>")
+def download(modpath: str):
+    return send_from_directory(path_to_folder, modpath)
 
 
 if __name__ == "__main__":
