@@ -7,7 +7,9 @@ import json
 
 path_to_folder = os.path.abspath(".\\test\\")
 path_to_mods = path_to_folder + "\\mods"
+path_to_configs = path_to_folder + "\\config"
 path_to_modslist = path_to_folder + "\\modslist.txt"
+path_to_configslist = path_to_folder + "\\configslist.txt"
 
 #####################################################
 
@@ -33,11 +35,17 @@ def generate_modlist(path: str):
     with open(path_to_modslist, "w") as f:
         f.write(dict_to_string(tree))
 
+def generate_configlist(path: str):
+    tree =travel_path(path_to_configs)
+
+    with open(path_to_configslist, "w") as f:
+        f.write(dict_to_string(tree))
 
 
 
 app = Flask(__name__)
 modslist: str
+configlist: str
 
 @app.route("/") 
 def index():
@@ -52,9 +60,17 @@ def download(modpath: str):
 
     return ""
 
+@app.route("/api/configslist")
+def configlist():
+    return configlist
+
+
 if __name__ == "__main__":
     generate_modlist(path_to_folder)
+    generate_configlist(path_to_folder)
     with open(path_to_modslist, "r") as f:
         modslist = f.read()
+    with open(path_to_configslist, "r") as f:
+        configlist = f.read()
 
     app.run()
