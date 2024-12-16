@@ -26,6 +26,13 @@ public class FileSyncClient {
     private static void syncFiles(String listType, String localPath) throws Exception {
         System.out.println("Syncing " + listType + "...");
 
+        // 디렉터리가 없으면 생성
+        Path basePath = Paths.get(localPath);
+        if (!Files.exists(basePath)) {
+            System.out.println("Directory not found: " + localPath + ". Creating directory...");
+            Files.createDirectories(basePath);
+        }
+
         // 서버에서 디렉터리 트리 가져오기
         String url = SERVER_URL + "/api/" + listType;
         String jsonResponse = sendGetRequest(url);
@@ -47,14 +54,19 @@ public class FileSyncClient {
 
             for (String fileName : serverFileList) {
                 Path localFile = localDir.resolve(fileName);
-                String serverHash = sendGetRequest(SERVER_URL + "/api/hash/" + relativePath + "/" + fileName);
+                String serverHash = sendGetRequest(getCleanPath(SERVER_URL + "/api/hash/" + relativePath + "/" + fileName));
 
                 if (!Files.exists(localFile) || !serverHash.equals(hashFile(localFile))) {
-                    System.out.println("Downloading: " + relativePath + "/" + fileName);
-                    downloadFile(SERVER_URL + "/api/download/" + relativePath + "/" + fileName, localFile.toString());
+                    System.out.println(getCleanPath("Downloading: " + relativePath + "/" + fileName));
+                    downloadFile(getCleanPath(SERVER_URL + "/api/download/" + relativePath + "/" + fileName), localFile.toString());
                 }
             }
         }
+    }
+
+    private static String getCleanPath(String path) throws Exception {
+        // 경로에서 .을 포함하지 않도록 처리 (예: './' -> '')
+        return path.replace("./", "");
     }
 
     private static String sendGetRequest(String urlString) throws IOException {
