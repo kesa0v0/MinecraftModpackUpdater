@@ -1,4 +1,6 @@
 from flask import Flask, send_from_directory
+import hashlib
+
 
 import os
 import json
@@ -12,6 +14,12 @@ path_to_modslist = path_to_folder + "\\modslist.txt"
 path_to_configslist = path_to_folder + "\\configslist.txt"
 
 #####################################################
+
+def hashing(file):
+    f = open(file, 'rb')
+    data = f.read()
+    f.close()
+    return hashlib.sha256(data).hexdigest()
 
 def travel_path(path: str) -> dict:
     result = {}
@@ -59,9 +67,13 @@ def modlist():
 def configlist():
     return configlist
 
-@app.route("/api/download/<path:modpath>")
-def download(modpath: str):
-    return send_from_directory(path_to_folder, modpath)
+@app.route("/api/download/<path:path>")
+def download(path: str):
+    return send_from_directory(path_to_folder, path)
+
+@app.route("/api/hash/<path:path>")
+def hash(path: str):
+    return hashing(os.path.join(path_to_folder, path))
 
 
 if __name__ == "__main__":
